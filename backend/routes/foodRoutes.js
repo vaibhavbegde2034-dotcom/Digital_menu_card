@@ -4,20 +4,22 @@ const Food = require('../models/Food');
 const Category = require('../models/Category');
 const { protect, optionalProtect } = require('../middleware/authMiddleware');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-const storage = multer.diskStorage({
-    destination(req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename(req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`);
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'menu_card_foods',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        transformation: [{ width: 500, height: 500, crop: 'limit' }]
     }
 });
 
@@ -44,7 +46,8 @@ router.use((req, res, next) => {
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         const { name, description, price, category, availability } = req.body;
-        const image = req.file ? `/uploads/${req.file.filename}` : '';
+        const image = req.file ? req.file.path : '';
+        
         const categoryExists = await Category.exists({ _id: category, admin: req.adminId });
 
         if (!categoryExists) {
@@ -80,7 +83,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
                  food.availability = availability === 'true' || availability === true;
             }
             if (req.file) {
-                 food.image = `/uploads/${req.file.filename}`;
+                 food.image = req.file.path;
             }
 
             const updatedFood = await food.save();
@@ -95,7 +98,24 @@ router.put('/:id', upload.single('image'), async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        await Food.findOneAndDelete({ _id: req.params.id, admin: req.adminId });
+        const food = await Food.findOne({ _id: req.params.id, admin: req.adminId });
+
+        if (!food) {
+            return res.status(404).json({ message: 'Food not found' });
+        }
+
+        if (food.image && food.image.includes('cloudinary.com')) {
+            // Correct logic: extract the part after 'menu_card_foods/' and before the extension
+            const match = food.image.match(/menu_card_foods\/([^/.]+)/);
+            if (match) {
+                const publicId = `menu_card_foods/${match[1]}`;
+                console.log('DEBUG: Attempting to delete Cloudinary image with publicId:', publicId);
+                const result = await cloudinary.uploader.destroy(publicId);
+                console.log('DEBUG: Cloudinary deletion result:', result);
+            }
+        }
+
+        await food.deleteOne();
         res.json({ message: 'Food removed' });
     } catch (error) {
         res.status(500).json({ message: error.message });
