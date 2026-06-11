@@ -9,7 +9,10 @@ const getApiBaseUrl = () => {
         return 'http://localhost:5000/api';
     }
 
-    return `${window.location.protocol}//${window.location.hostname}:5000/api`;
+    // Use current location protocol and hostname but ensure port 5000
+    const url = `${window.location.protocol}//${window.location.hostname}:5000/api`;
+    console.log('API Base URL:', url);
+    return url;
 };
 
 const api = axios.create({

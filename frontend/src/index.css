@@ -64,14 +64,6 @@ body {
   margin-bottom: 2rem;
 }
 
-.menu-admin-name {
-  color: var(--primary-color);
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-}
-
 .menu-header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -327,6 +319,38 @@ body {
 
 .btn-secondary:hover {
   background-color: #1e293b;
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
 }
 
 .empty-menu {

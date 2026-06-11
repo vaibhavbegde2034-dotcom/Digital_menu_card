@@ -5,6 +5,7 @@ import api from '../../api/axios';
 const CategoryManage = () => {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState('');
+  const [editId, setEditId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,15 +21,25 @@ const CategoryManage = () => {
     }
   };
 
-  const handleAdd = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/categories', { name });
+      if (editId) {
+        await api.put(`/categories/${editId}`, { name });
+      } else {
+        await api.post('/categories', { name });
+      }
       setName('');
+      setEditId(null);
       fetchCategories();
     } catch (err) {
-      alert(err.response?.data?.message || 'Error adding category');
+      alert(err.response?.data?.message || 'Error saving category');
     }
+  };
+
+  const handleEdit = (cat) => {
+    setEditId(cat._id);
+    setName(cat.name);
   };
 
   const handleDelete = async (id) => {
@@ -47,9 +58,10 @@ const CategoryManage = () => {
       <h2 style={{ marginBottom: '2rem' }}>Manage Categories</h2>
       
       <div className="food-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-        <form onSubmit={handleAdd} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+        <h3 style={{ marginBottom: '1rem' }}>{editId ? 'Edit Category' : 'Add New Category'}</h3>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
           <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-            <label>New Category Name</label>
+            <label>Category Name</label>
             <input 
               type="text" 
               className="form-control" 
@@ -58,7 +70,13 @@ const CategoryManage = () => {
               required 
             />
           </div>
-          <button type="submit" className="btn">Add Category</button>
+          <button type="submit" className="btn">{editId ? 'Update' : 'Add Category'}</button>
+          {editId && (
+            <button type="button" className="btn btn-secondary" onClick={() => {
+              setEditId(null);
+              setName('');
+            }}>Cancel</button>
+          )}
         </form>
       </div>
 
@@ -67,6 +85,7 @@ const CategoryManage = () => {
           <thead>
             <tr>
               <th>Name</th>
+              <th>Food Items</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -75,6 +94,12 @@ const CategoryManage = () => {
               <tr key={cat._id}>
                 <td>{cat.name}</td>
                 <td>
+                  <span className="badge" style={{ backgroundColor: '#f1f5f9', color: '#64748b', padding: '0.25rem 0.6rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: '600' }}>
+                    {cat.foodCount || 0} items
+                  </span>
+                </td>
+                <td>
+                  <button onClick={() => handleEdit(cat)} className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem', marginRight: '0.5rem', backgroundColor: '#3b82f6' }}>Edit</button>
                   <button onClick={() => handleDelete(cat._id)} className="btn btn-danger" style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem' }}>Delete</button>
                 </td>
               </tr>

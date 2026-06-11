@@ -6,7 +6,11 @@ const FoodCard = ({ food }) => {
     currency: 'INR',
     maximumFractionDigits: 2
   }).format(food.price);
-  const imageUrl = food.image ? `${getApiBaseUrl().replace(/\/api$/, '')}${food.image}` : '';
+  
+  let imageUrl = food.image || '';
+  if (imageUrl && imageUrl.startsWith('/uploads')) {
+    imageUrl = `${getApiBaseUrl().replace('/api', '')}${imageUrl}`;
+  }
 
   return (
     <div className="food-card">
@@ -15,6 +19,7 @@ const FoodCard = ({ food }) => {
           src={imageUrl}
           alt={food.name}
           className="food-image"
+          onError={(e) => { e.target.onerror = null; e.target.src = '/path-to-placeholder.jpg'; }}
         />
       ) : (
         <div className="food-image food-image-placeholder">

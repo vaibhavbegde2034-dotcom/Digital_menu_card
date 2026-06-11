@@ -14,6 +14,7 @@ const FoodManage = () => {
     image: null
   });
   const [editId, setEditId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const formatPrice = (price) => new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -95,6 +96,11 @@ const FoodManage = () => {
     }
   };
 
+  const filteredFoods = foods.filter(food => 
+    food.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    food.category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h2 style={{ marginBottom: '2rem' }}>Manage Foods</h2>
@@ -145,6 +151,17 @@ const FoodManage = () => {
         </form>
       </div>
 
+      <div className="search-container" style={{ maxWidth: '100%', marginBottom: '1.5rem' }}>
+        <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input 
+          type="text" 
+          className="search-input" 
+          placeholder="Search by name or category..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="table-responsive">
         <table className="table">
           <thead>
@@ -161,7 +178,7 @@ const FoodManage = () => {
             {foods.map(food => (
               <tr key={food._id}>
                 <td>
-                  {food.image && <img src={`${getApiBaseUrl().replace(/\/api$/, '')}${food.image}`} alt={food.name} style={{ width: '50px', height: '50px', objectFit: 'contain', borderRadius: '4px', background: '#fff', padding: '2px' }} />}
+                  {food.image && <img src={food.image} alt={food.name} style={{ width: '50px', height: '50px', objectFit: 'contain', borderRadius: '4px', background: '#fff', padding: '2px' }} />}
                 </td>
                 <td>{food.name}</td>
                 <td>{food.category?.name}</td>
@@ -175,6 +192,9 @@ const FoodManage = () => {
             ))}
           </tbody>
         </table>
+        {filteredFoods.length === 0 && (
+          <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>No matching food items found.</p>
+        )}
       </div>
     </div>
   );

@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import api from '../../api/axios';
 import FoodCard from './FoodCard';
 
-const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings', adminName }) => {
+const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings' }) => {
   const [foods, setFoods] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [publicAdminName, setPublicAdminName] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
   const { adminId } = useParams();
 
   useEffect(() => {
@@ -22,31 +22,39 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
         api.get('/categories', requestConfig)
       ];
 
-      if (adminId) {
-        requests.push(api.get(`/auth/public/${adminId}`));
-      }
-
-      const [foodsRes, categoriesRes, adminRes] = await Promise.all(requests);
+      const [foodsRes, categoriesRes] = await Promise.all(requests);
       setFoods(foodsRes.data);
       setCategories(categoriesRes.data);
-      setPublicAdminName(adminRes?.data?.username || '');
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  const displayAdminName = adminName || publicAdminName;
-  const displayTitle = displayAdminName && title === 'Our Menu' ? `${displayAdminName}'s Menu` : title;
-  const filteredFoods = activeCategory === 'All' 
-    ? foods 
-    : foods.filter(food => food.category?.name === activeCategory);
+  const displayTitle = title;
+  
+  const filteredFoods = foods.filter(food => {
+    const matchesCategory = activeCategory === 'All' || food.category?.name === activeCategory;
+    const matchesSearch = food.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          food.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div>
       <div className="menu-header">
-        {displayAdminName && <p className="menu-admin-name">Admin: {displayAdminName}</p>}
         <h1>{displayTitle}</h1>
         <p>{subtitle}</p>
+      </div>
+
+      <div className="search-container">
+        <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input 
+          type="text" 
+          className="search-input" 
+          placeholder="Search for dishes..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       <div className="category-filter">
@@ -73,7 +81,7 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
         ))}
       </div>
       {filteredFoods.length === 0 && (
-        <p className="empty-menu">No menu items are available yet.</p>
+        <p className="empty-menu">No matching menu items found.</p>
       )}
     </div>
   );

@@ -44,6 +44,9 @@ const MenuQrCode = ({ adminId }) => {
         <button type="button" className="btn" onClick={handleCopy}>
           {copied ? 'Copied' : 'Copy Link'}
         </button>
+        <a className="btn btn-secondary" href={qrImage} download="menu-qr-code.png">
+          Download QR
+        </a>
         <a className="btn btn-secondary" href={menuUrl} target="_blank" rel="noreferrer">
           Open Menu
         </a>
