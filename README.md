@@ -24,6 +24,13 @@ The backend server will run on `http://localhost:5000`.
 ```bash
 cd frontend
 npm install
+```
+Create a `.env` file in the `frontend` directory and add the following:
+```env
+VITE_API_BASE_URL=https://digital-menu-card-one.vercel.app/api
+```
+Then run the development server:
+```bash
 npm run dev
 ```
 The frontend will be available at `http://localhost:5173`.
