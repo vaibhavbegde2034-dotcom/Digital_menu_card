@@ -399,3 +399,23 @@ body {
   font-weight: 700;
   text-transform: uppercase;
 }
+
+/* Responsive Improvements */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  .navbar {
+    padding: 1rem;
+  }
+  .food-grid {
+    grid-template-columns: 1fr; /* Stack food items on small screens */
+  }
+  .menu-header h1 {
+    font-size: 2rem;
+  }
+  .admin-login {
+    margin: 2rem 10px;
+    padding: 1.5rem;
+  }
+}
