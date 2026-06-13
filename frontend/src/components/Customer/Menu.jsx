@@ -35,7 +35,7 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
   const filteredFoods = foods.filter(food => {
     const matchesCategory = activeCategory === 'All' || food.category?.name === activeCategory;
     const matchesSearch = food.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          food.description.toLowerCase().includes(searchTerm.toLowerCase());
+                          (food.description && food.description.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 

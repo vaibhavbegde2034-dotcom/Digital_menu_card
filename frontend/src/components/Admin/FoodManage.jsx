@@ -119,7 +119,7 @@ const FoodManage = () => {
             </div>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label>Description</label>
-              <textarea className="form-control" name="description" value={formData.description} onChange={handleInputChange} required rows="3"></textarea>
+              <textarea className="form-control" name="description" value={formData.description} onChange={handleInputChange} rows="3"></textarea>
             </div>
             <div className="form-group">
               <label>Category</label>
