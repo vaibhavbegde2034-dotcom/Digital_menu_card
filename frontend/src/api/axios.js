@@ -1,12 +1,7 @@
 import axios from 'axios';
 
 const getApiBaseUrl = () => {
-    if (import.meta.env.VITE_API_BASE_URL) {
-        return import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
-    }
-
-    // Default to a relative URL to allow the server to handle it or proxy it
-    return '/api';
+    return 'https://digital-menu-card-8la9.onrender.com/api';
 };
 
 const api = axios.create({
