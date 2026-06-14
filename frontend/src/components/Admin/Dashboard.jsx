@@ -50,6 +50,10 @@ const Dashboard = () => {
     categories: categories.length
   };
 
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h2>Admin Dashboard</h2>
         {admin?.logo && (
           <img src={admin.logo} alt="Restaurant Logo" style={{ height: '60px', borderRadius: '8px', objectFit: 'contain' }} />
         )}
