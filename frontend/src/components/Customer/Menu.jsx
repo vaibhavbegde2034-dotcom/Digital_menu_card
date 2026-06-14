@@ -56,30 +56,33 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
   });
 
   return (
-    <div>
+    <div style={{ paddingBottom: '2rem' }}>
       <div className="menu-header">
         {adminLogo && (
-          <img 
-            src={adminLogo} 
-            alt="Logo" 
-            style={{ height: '80px', marginBottom: '1rem', objectFit: 'contain', borderRadius: '12px' }} 
-          />
+          <div style={{ marginBottom: '1.25rem' }}>
+            <img 
+              src={adminLogo} 
+              alt="Logo" 
+              style={{ height: '70px', objectFit: 'contain', borderRadius: '16px', padding: '6px', background: '#fff', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-color)' }} 
+            />
+          </div>
         )}
         <h1>{displayTitle}</h1>
         <p>{subtitle}</p>
       </div>
+
       <div className="search-container">
-        <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input 
           type="text" 
           className="search-input" 
-          placeholder="Search for dishes..." 
+          placeholder="Search your favorites..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      <div className="category-filter">
+      <div className="category-filter" style={{ marginBottom: '3rem' }}>
         <button 
           className={`category-btn ${activeCategory === 'All' ? 'active' : ''}`}
           onClick={() => setActiveCategory('All')}
@@ -100,7 +103,7 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
       {loading ? (
         <div className="loading-container">
           <div className="loader"></div>
-          <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Loading menu...</p>
+          <p style={{ marginTop: '1.25rem', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>Preparing your menu...</p>
         </div>
       ) : (
         <>
@@ -110,7 +113,10 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
             ))}
           </div>
           {filteredFoods.length === 0 && (
-            <p className="empty-menu">No matching menu items found.</p>
+            <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
+              <p className="empty-menu" style={{ fontSize: '1.1rem', fontWeight: 600 }}>No dishes found matching "{searchTerm}"</p>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Try a different keyword or category.</p>
+            </div>
           )}
         </>
       )}

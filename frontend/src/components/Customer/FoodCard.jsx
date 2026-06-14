@@ -4,7 +4,7 @@ const FoodCard = ({ food }) => {
   const formattedPrice = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
-    maximumFractionDigits: 2
+    maximumFractionDigits: 0
   }).format(food.price);
   
   let imageUrl = food.image || '';
@@ -14,25 +14,31 @@ const FoodCard = ({ food }) => {
 
   return (
     <div className="food-card">
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={food.name}
-          className="food-image"
-          loading="lazy"
-          onError={(e) => { e.target.onerror = null; e.target.src = '/path-to-placeholder.jpg'; }}
-        />
-      ) : (
-        <div className="food-image food-image-placeholder">
-          <span>No Image</span>
-        </div>
-      )}
+      <div style={{ position: 'relative' }}>
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={food.name}
+            className="food-image"
+            loading="lazy"
+            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80'; }}
+          />
+        ) : (
+          <div className="food-image food-image-placeholder">
+            <span>{food.name[0]}</span>
+          </div>
+        )}
+        {!food.availability && (
+          <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+            <span className="unavailable-badge">Sold Out</span>
+          </div>
+        )}
+      </div>
       <div className="food-info">
         <h3 className="food-title">{food.name}</h3>
-        <p className="food-desc">{food.description}</p>
+        {food.description && <p className="food-desc">{food.description}</p>}
         <div className="food-footer">
           <span className="food-price">{formattedPrice}</span>
-          {!food.availability && <span className="unavailable-badge">Unavailable</span>}
         </div>
       </div>
     </div>
