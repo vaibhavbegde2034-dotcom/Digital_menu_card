@@ -7,7 +7,9 @@ const foodSchema = new mongoose.Schema({
     image: { type: String },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     admin: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
-    availability: { type: Boolean, default: true }
+    availability: { type: Boolean, default: true },
+    dietaryType: { type: String, enum: ['veg', 'non-veg'], default: 'veg' },
+    spicyLevel: { type: Number, default: 0, min: 0, max: 3 }
 }, { timestamps: true });
 
 foodSchema.index({ admin: 1 });

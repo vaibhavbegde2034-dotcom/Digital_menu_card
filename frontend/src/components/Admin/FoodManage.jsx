@@ -11,7 +11,9 @@ const FoodManage = () => {
     price: '',
     category: '',
     availability: true,
-    image: null
+    image: null,
+    dietaryType: 'veg',
+    spicyLevel: 0
   });
   const [editId, setEditId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,7 +42,9 @@ const FoodManage = () => {
     e.preventDefault();
     const data = new FormData();
     Object.keys(formData).forEach(key => {
-      data.append(key, formData[key]);
+      if (formData[key] !== null) {
+        data.append(key, formData[key]);
+      }
     });
 
     try {
@@ -53,7 +57,7 @@ const FoodManage = () => {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
-      setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null });
+      setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null, dietaryType: 'veg', spicyLevel: 0 });
       setEditId(null);
       document.getElementById('imageInput').value = '';
       refreshFoods();
@@ -70,7 +74,9 @@ const FoodManage = () => {
       price: food.price,
       category: food.category?._id || '',
       availability: food.availability,
-      image: null
+      image: null,
+      dietaryType: food.dietaryType || 'veg',
+      spicyLevel: food.spicyLevel || 0
     });
   };
 
@@ -120,6 +126,22 @@ const FoodManage = () => {
               </select>
             </div>
             <div className="form-group">
+              <label>Dietary Type</label>
+              <select className="form-control" name="dietaryType" value={formData.dietaryType} onChange={handleInputChange} required>
+                <option value="veg">Veg (Green Dot)</option>
+                <option value="non-veg">Non-Veg (Red Dot)</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Spicy Level (0-3 Chillies)</label>
+              <select className="form-control" name="spicyLevel" value={formData.spicyLevel} onChange={handleInputChange} required>
+                <option value={0}>Not Spicy</option>
+                <option value={1}>Mild (1 Chilli)</option>
+                <option value={2}>Medium (2 Chillies)</option>
+                <option value={3}>Extra Hot (3 Chillies)</option>
+              </select>
+            </div>
+            <div className="form-group">
               <label>Image</label>
               <input type="file" id="imageInput" className="form-control" name="image" onChange={handleInputChange} accept="image/*" />
             </div>
@@ -133,7 +155,7 @@ const FoodManage = () => {
             {editId && (
               <button type="button" className="btn btn-danger" onClick={() => {
                 setEditId(null);
-                setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null });
+                setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null, dietaryType: 'veg', spicyLevel: 0 });
               }}>Cancel</button>
             )}
           </div>

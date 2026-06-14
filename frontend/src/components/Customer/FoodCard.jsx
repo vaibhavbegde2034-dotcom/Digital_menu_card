@@ -12,6 +12,18 @@ const FoodCard = ({ food }) => {
     imageUrl = `${getApiBaseUrl().replace('/api', '')}${imageUrl}`;
   }
 
+  // Spicy icons helper
+  const renderSpicyLevel = (level) => {
+    if (!level || level === 0) return null;
+    return (
+      <span style={{ display: 'inline-flex', gap: '2px', marginLeft: '8px', verticalAlign: 'middle' }}>
+        {[...Array(level)].map((_, i) => (
+          <span key={i} title="Spicy">🌶️</span>
+        ))}
+      </span>
+    );
+  };
+
   return (
     <div className="food-card">
       <div style={{ position: 'relative' }}>
@@ -33,9 +45,34 @@ const FoodCard = ({ food }) => {
             <span className="unavailable-badge">Sold Out</span>
           </div>
         )}
+        {/* Dietary Indicator (Green/Red Dot) */}
+        <div style={{ 
+          position: 'absolute', 
+          top: '10px', 
+          left: '10px', 
+          background: 'rgba(255,255,255,0.9)', 
+          padding: '4px', 
+          borderRadius: '4px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: `1px solid ${food.dietaryType === 'non-veg' ? '#ef4444' : '#22c55e'}`
+        }}>
+          <div style={{ 
+            width: '8px', 
+            height: '8px', 
+            borderRadius: '50%', 
+            background: food.dietaryType === 'non-veg' ? '#ef4444' : '#22c55e' 
+          }}></div>
+        </div>
       </div>
       <div className="food-info">
-        <h3 className="food-title">{food.name}</h3>
+        <h3 className="food-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span>
+            {food.name}
+            {renderSpicyLevel(food.spicyLevel)}
+          </span>
+        </h3>
         {food.description && <p className="food-desc">{food.description}</p>}
         <div className="food-footer">
           <span className="food-price">{formattedPrice}</span>

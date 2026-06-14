@@ -45,7 +45,7 @@ router.use((req, res, next) => {
 
 router.post('/', upload.single('image'), async (req, res) => {
     try {
-        const { name, description, price, category, availability } = req.body;
+        const { name, description, price, category, availability, dietaryType, spicyLevel } = req.body;
         const image = req.file ? req.file.path : '';
         
         const categoryExists = await Category.exists({ _id: category, admin: req.adminId });
@@ -55,7 +55,15 @@ router.post('/', upload.single('image'), async (req, res) => {
         }
         
         const food = await Food.create({
-            name, description, price, category, admin: req.adminId, availability: availability === 'true' || availability === true, image
+            name, 
+            description, 
+            price, 
+            category, 
+            admin: req.adminId, 
+            availability: availability === 'true' || availability === true, 
+            image,
+            dietaryType: dietaryType || 'veg',
+            spicyLevel: Number(spicyLevel) || 0
         });
         res.status(201).json(food);
     } catch (error) {
@@ -65,7 +73,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 
 router.put('/:id', upload.single('image'), async (req, res) => {
     try {
-        const { name, description, price, category, availability } = req.body;
+        const { name, description, price, category, availability, dietaryType, spicyLevel } = req.body;
         const food = await Food.findOne({ _id: req.params.id, admin: req.adminId });
 
         if (food) {
@@ -79,6 +87,10 @@ router.put('/:id', upload.single('image'), async (req, res) => {
             food.description = description || food.description;
             food.price = price || food.price;
             food.category = category || food.category;
+            food.dietaryType = dietaryType || food.dietaryType;
+            if (spicyLevel !== undefined) {
+                food.spicyLevel = Number(spicyLevel);
+            }
             if (availability !== undefined) {
                  food.availability = availability === 'true' || availability === true;
             }
