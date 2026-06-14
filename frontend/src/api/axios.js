@@ -1,6 +1,9 @@
 import axios from 'axios';
 
 const getApiBaseUrl = () => {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:5000/api';
+    }
     return 'https://digital-menu-card-8la9.onrender.com/api';
 };
 
