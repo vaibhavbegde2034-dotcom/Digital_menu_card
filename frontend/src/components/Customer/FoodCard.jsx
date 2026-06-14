@@ -19,10 +19,7 @@ const FoodCard = ({ food }) => {
     let text = '';
     let color = '';
     
-    if (level === 1) {
-      text = 'Mild Spicy';
-      color = '#f59e0b'; // Amber
-    } else if (level === 2) {
+    if (level === 2) {
       text = 'Medium Spicy';
       color = '#f97316'; // Orange
     } else if (level === 3) {

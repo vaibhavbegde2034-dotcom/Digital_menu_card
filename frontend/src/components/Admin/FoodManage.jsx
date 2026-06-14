@@ -133,12 +133,11 @@ const FoodManage = () => {
               </select>
             </div>
             <div className="form-group">
-              <label>Spicy Level (0-3 Chillies)</label>
+              <label>Spicy Level</label>
               <select className="form-control" name="spicyLevel" value={formData.spicyLevel} onChange={handleInputChange} required>
                 <option value={0}>Not Spicy</option>
-                <option value={1}>Mild (1 Chilli)</option>
-                <option value={2}>Medium (2 Chillies)</option>
-                <option value={3}>Extra Hot (3 Chillies)</option>
+                <option value={2}>Medium Spicy</option>
+                <option value={3}>Extra Spicy</option>
               </select>
             </div>
             <div className="form-group">
@@ -179,8 +178,10 @@ const FoodManage = () => {
             <tr>
               <th>Image</th>
               <th>Name</th>
+              <th>Type</th>
               <th>Category</th>
               <th>Price</th>
+              <th>Spicy</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -189,15 +190,44 @@ const FoodManage = () => {
             {foods.map(food => (
               <tr key={food._id}>
                 <td>
-                  {food.image && <img src={food.image} alt={food.name} style={{ width: '50px', height: '50px', objectFit: 'contain', borderRadius: '4px', background: '#fff', padding: '2px' }} />}
+                  {food.image && <img src={food.image} alt={food.name} style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border-color)' }} />}
                 </td>
-                <td>{food.name}</td>
+                <td style={{ fontWeight: '600' }}>{food.name}</td>
+                <td>
+                  <div style={{ 
+                    width: '18px', 
+                    height: '18px', 
+                    border: `1px solid ${food.dietaryType === 'non-veg' ? '#ef4444' : '#22c55e'}`, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    borderRadius: '3px'
+                  }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: food.dietaryType === 'non-veg' ? '#ef4444' : '#22c55e' }}></div>
+                  </div>
+                </td>
                 <td>{food.category?.name}</td>
                 <td>{formatPrice(food.price)}</td>
-                <td>{food.availability ? 'Available' : 'Unavailable'}</td>
                 <td>
-                  <button onClick={() => handleEdit(food)} className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem', marginRight: '0.5rem', backgroundColor: '#3b82f6' }}>Edit</button>
-                  <button onClick={() => handleDelete(food._id)} className="btn btn-danger" style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem' }}>Delete</button>
+                  <span style={{ fontSize: '0.75rem', fontWeight: '700', color: food.spicyLevel > 0 ? 'var(--primary-color)' : 'var(--text-muted)' }}>
+                    {food.spicyLevel === 0 ? 'Not Spicy' : food.spicyLevel === 2 ? 'Medium Spicy' : 'Extra Spicy'}
+                  </span>
+                </td>
+                <td>
+                  <span className={`badge ${food.availability ? 'badge-success' : 'badge-danger'}`} style={{ 
+                    fontSize: '0.75rem', 
+                    padding: '0.2rem 0.5rem', 
+                    borderRadius: '100px',
+                    background: food.availability ? '#f0fdf4' : '#fef2f2',
+                    color: food.availability ? '#166534' : '#991b1b',
+                    fontWeight: '700'
+                  }}>
+                    {food.availability ? 'Active' : 'Hidden'}
+                  </span>
+                </td>
+                <td>
+                  <button onClick={() => handleEdit(food)} className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', marginRight: '0.5rem', backgroundColor: '#3b82f6' }}>Edit</button>
+                  <button onClick={() => handleDelete(food._id)} className="btn btn-danger" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>Delete</button>
                 </td>
               </tr>
             ))}
