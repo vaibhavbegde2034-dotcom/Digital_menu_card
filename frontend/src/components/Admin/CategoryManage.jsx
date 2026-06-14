@@ -53,8 +53,8 @@ const CategoryManage = () => {
       
       <div className="food-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h3 style={{ marginBottom: '1rem' }}>{editId ? 'Edit Category' : 'Add New Category'}</h3>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-          <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
             <label>Category Name</label>
             <input 
               type="text" 
@@ -64,13 +64,15 @@ const CategoryManage = () => {
               required 
             />
           </div>
-          <button type="submit" className="btn">{editId ? 'Update' : 'Add Category'}</button>
-          {editId && (
-            <button type="button" className="btn btn-secondary" onClick={() => {
-              setEditId(null);
-              setName('');
-            }}>Cancel</button>
-          )}
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button type="submit" className="btn" style={{ flex: 1 }}>{editId ? 'Update' : 'Add Category'}</button>
+            {editId && (
+              <button type="button" className="btn btn-secondary" onClick={() => {
+                setEditId(null);
+                setName('');
+              }}>Cancel</button>
+            )}
+          </div>
         </form>
       </div>
 

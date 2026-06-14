@@ -103,7 +103,7 @@ const FoodManage = () => {
       <div className="food-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h3 style={{ marginBottom: '1rem' }}>{editId ? 'Edit Food' : 'Add New Food'}</h3>
         <form onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div className="form-group">
               <label>Name</label>
               <input type="text" className="form-control" name="name" value={formData.name} onChange={handleInputChange} required />
@@ -112,7 +112,7 @@ const FoodManage = () => {
               <label>Price (₹)</label>
               <input type="number" step="0.01" className="form-control" name="price" value={formData.price} onChange={handleInputChange} required />
             </div>
-            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <div className="form-group">
               <label>Description</label>
               <textarea className="form-control" name="description" value={formData.description} onChange={handleInputChange} rows="3"></textarea>
             </div>
@@ -150,7 +150,7 @@ const FoodManage = () => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button type="submit" className="btn">{editId ? 'Update Food' : 'Add Food'}</button>
+            <button type="submit" className="btn" style={{ flex: 1 }}>{editId ? 'Update Food' : 'Add Food'}</button>
             {editId && (
               <button type="button" className="btn btn-danger" onClick={() => {
                 setEditId(null);

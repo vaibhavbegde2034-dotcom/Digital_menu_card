@@ -25,15 +25,15 @@ const Navbar = () => {
           <>
             <Link to="/admin/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <LayoutDashboard size={16} />
-              Dashboard
+              <span>Dashboard</span>
             </Link>
             <Link to="/admin/categories" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <List size={16} />
-              Categories
+              <span>Categories</span>
             </Link>
             <Link to="/admin/foods" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <Utensils size={16} />
-              Foods
+              <span>Foods</span>
             </Link>
             <button 
               className="nav-logout-btn" 
@@ -54,7 +54,7 @@ const Navbar = () => {
               }}
             >
               <LogOut size={14} />
-              Logout
+              <span>Logout</span>
             </button>
           </>
         ) : (
