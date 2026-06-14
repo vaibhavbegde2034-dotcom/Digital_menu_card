@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Category = require('../models/Category');
 const { protect, optionalProtect } = require('../middleware/authMiddleware');
@@ -8,19 +9,30 @@ const Food = require('../models/Food');
 router.get('/', optionalProtect, async (req, res) => {
     try {
         const adminId = req.adminId || req.query.admin;
-        const query = adminId ? { admin: adminId } : {};
-        
-        const categories = await Category.find(query).lean();
-        const allFoods = await Food.find(adminId ? { admin: adminId } : {}).select('category').lean();
+        if (!adminId) {
+            return res.json([]);
+        }
 
-        console.log(`Debug: Admin ${adminId} has ${categories.length} categories and ${allFoods.length} total foods.`);
+        const adminObjectId = new mongoose.Types.ObjectId(adminId);
 
-        const categoriesWithCount = categories.map(cat => {
-            const count = allFoods.filter(f => 
-                f.category && f.category.toString() === cat._id.toString()
-            ).length;
-            return { ...cat, foodCount: count };
-        });
+        const categoriesWithCount = await Category.aggregate([
+            { $match: { admin: adminObjectId } },
+            {
+                $lookup: {
+                    from: 'foods',
+                    localField: '_id',
+                    foreignField: 'category',
+                    as: 'foods'
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    admin: 1,
+                    foodCount: { $size: '$foods' }
+                }
+            }
+        ]);
         
         res.json(categoriesWithCount);
     } catch (error) {

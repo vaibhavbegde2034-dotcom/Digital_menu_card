@@ -41,7 +41,7 @@ router.post('/setup', async (req, res) => {
 
 router.get('/public', async (req, res) => {
     try {
-        const admins = await Admin.find().select('_id username createdAt').sort({ username: 1 });
+        const admins = await Admin.find().select('_id username createdAt').sort({ username: 1 }).lean();
         res.json(admins);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -50,7 +50,7 @@ router.get('/public', async (req, res) => {
 
 router.get('/public/:id', async (req, res) => {
     try {
-        const admin = await Admin.findById(req.params.id).select('_id username');
+        const admin = await Admin.findById(req.params.id).select('_id username').lean();
 
         if (!admin) {
             return res.status(404).json({ message: 'Admin not found' });

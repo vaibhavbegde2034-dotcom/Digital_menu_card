@@ -10,4 +10,7 @@ const foodSchema = new mongoose.Schema({
     availability: { type: Boolean, default: true }
 }, { timestamps: true });
 
+foodSchema.index({ admin: 1 });
+foodSchema.index({ category: 1 });
+
 module.exports = mongoose.model('Food', foodSchema);

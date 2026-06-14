@@ -29,7 +29,7 @@ router.get('/', optionalProtect, async (req, res) => {
     try {
         const adminId = req.adminId || req.query.admin;
         const query = adminId ? { admin: adminId } : {};
-        const foods = await Food.find(query).populate('category', 'name');
+        const foods = await Food.find(query).populate('category', 'name').lean();
         res.json(foods);
     } catch (error) {
         res.status(500).json({ message: error.message });

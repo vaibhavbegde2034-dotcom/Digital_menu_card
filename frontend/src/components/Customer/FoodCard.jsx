@@ -19,6 +19,7 @@ const FoodCard = ({ food }) => {
           src={imageUrl}
           alt={food.name}
           className="food-image"
+          loading="lazy"
           onError={(e) => { e.target.onerror = null; e.target.src = '/path-to-placeholder.jpg'; }}
         />
       ) : (
