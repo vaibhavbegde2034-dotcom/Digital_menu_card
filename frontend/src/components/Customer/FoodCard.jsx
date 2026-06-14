@@ -12,14 +12,36 @@ const FoodCard = ({ food }) => {
     imageUrl = `${getApiBaseUrl().replace('/api', '')}${imageUrl}`;
   }
 
-  // Spicy icons helper
+  // Spicy text helper
   const renderSpicyLevel = (level) => {
     if (!level || level === 0) return null;
+    
+    let text = '';
+    let color = '';
+    
+    if (level === 1) {
+      text = 'Mild Spicy';
+      color = '#f59e0b'; // Amber
+    } else if (level === 2) {
+      text = 'Medium Spicy';
+      color = '#f97316'; // Orange
+    } else if (level === 3) {
+      text = 'Extra Spicy';
+      color = '#ef4444'; // Red
+    }
+
     return (
-      <span style={{ display: 'inline-flex', gap: '2px', marginLeft: '8px', verticalAlign: 'middle' }}>
-        {[...Array(level)].map((_, i) => (
-          <span key={i} title="Spicy">🌶️</span>
-        ))}
+      <span style={{ 
+        fontSize: '0.65rem', 
+        fontWeight: '700', 
+        color: color, 
+        backgroundColor: `${color}15`, // Transparent version of the color
+        padding: '2px 6px', 
+        borderRadius: '4px', 
+        textTransform: 'uppercase',
+        marginLeft: '8px'
+      }}>
+        {text}
       </span>
     );
   };

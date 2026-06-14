@@ -16,6 +16,7 @@ const Menu = ({
   const [adminName, setAdminName] = useState(initialAdminName);
   const [adminLogo, setAdminLogo] = useState(initialAdminLogo);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [dietaryFilter, setDietaryFilter] = useState('all'); // 'all', 'veg', 'non-veg'
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(!initialFoods);
   const { adminId } = useParams();
@@ -69,7 +70,8 @@ const Menu = ({
     const matchesCategory = activeCategory === 'All' || food.category?.name === activeCategory;
     const matchesSearch = food.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (food.description && food.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesCategory && matchesSearch;
+    const matchesDietary = dietaryFilter === 'all' || food.dietaryType === dietaryFilter;
+    return matchesCategory && matchesSearch && matchesDietary;
   });
 
   return (
@@ -97,6 +99,65 @@ const Menu = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        <button 
+          onClick={() => setDietaryFilter('all')}
+          style={{ 
+            padding: '0.4rem 1rem', 
+            borderRadius: '100px', 
+            border: '1px solid var(--border-color)', 
+            background: dietaryFilter === 'all' ? 'var(--text-main)' : '#fff',
+            color: dietaryFilter === 'all' ? '#fff' : 'var(--text-muted)',
+            fontSize: '0.8rem',
+            fontWeight: '700',
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+        >
+          All
+        </button>
+        <button 
+          onClick={() => setDietaryFilter('veg')}
+          style={{ 
+            padding: '0.4rem 1rem', 
+            borderRadius: '100px', 
+            border: `1px solid ${dietaryFilter === 'veg' ? '#22c55e' : 'var(--border-color)'}`, 
+            background: dietaryFilter === 'veg' ? '#f0fdf4' : '#fff',
+            color: dietaryFilter === 'veg' ? '#166534' : 'var(--text-muted)',
+            fontSize: '0.8rem',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
+          Pure Veg
+        </button>
+        <button 
+          onClick={() => setDietaryFilter('non-veg')}
+          style={{ 
+            padding: '0.4rem 1rem', 
+            borderRadius: '100px', 
+            border: `1px solid ${dietaryFilter === 'non-veg' ? '#ef4444' : 'var(--border-color)'}`, 
+            background: dietaryFilter === 'non-veg' ? '#fef2f2' : '#fff',
+            color: dietaryFilter === 'non-veg' ? '#991b1b' : 'var(--text-muted)',
+            fontSize: '0.8rem',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }}></div>
+          Non-Veg
+        </button>
       </div>
 
       <div className="category-filter" style={{ marginBottom: '3rem' }}>
