@@ -6,6 +6,8 @@ import FoodCard from './FoodCard';
 const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings' }) => {
   const [foods, setFoods] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [adminName, setAdminName] = useState('');
+  const [adminLogo, setAdminLogo] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -24,9 +26,19 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
         api.get('/categories', requestConfig)
       ];
 
-      const [foodsRes, categoriesRes] = await Promise.all(requests);
-      setFoods(foodsRes.data);
-      setCategories(categoriesRes.data);
+      // If we have an adminId, fetch the admin's name for the header
+      if (adminId) {
+        requests.push(api.get(`/auth/public/${adminId}`));
+      }
+
+      const results = await Promise.all(requests);
+      setFoods(results[0].data);
+      setCategories(results[1].data);
+
+      if (adminId && results[2]) {
+        setAdminName(results[2].data.username);
+        setAdminLogo(results[2].data.logo);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -34,8 +46,8 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
     }
   };
 
-  const displayTitle = title;
-  
+  const displayTitle = adminName || title;
+
   const filteredFoods = foods.filter(food => {
     const matchesCategory = activeCategory === 'All' || food.category?.name === activeCategory;
     const matchesSearch = food.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -46,10 +58,16 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
   return (
     <div>
       <div className="menu-header">
+        {adminLogo && (
+          <img 
+            src={adminLogo} 
+            alt="Logo" 
+            style={{ height: '80px', marginBottom: '1rem', objectFit: 'contain', borderRadius: '12px' }} 
+          />
+        )}
         <h1>{displayTitle}</h1>
         <p>{subtitle}</p>
       </div>
-
       <div className="search-container">
         <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input 
