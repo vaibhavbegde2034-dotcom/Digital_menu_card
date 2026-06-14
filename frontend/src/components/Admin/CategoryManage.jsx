@@ -1,25 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
+import { useAdmin } from '../../context/AdminContext';
 
 const CategoryManage = () => {
-  const [categories, setCategories] = useState([]);
+  const { categories, initialLoadDone, fetchAllData, refreshCategories } = useAdmin();
   const [name, setName] = useState('');
   const [editId, setEditId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await api.get('/categories');
-      setCategories(res.data);
-    } catch (err) {
-      if (err.response?.status === 401) navigate('/admin');
+    if (!initialLoadDone) {
+      fetchAllData();
     }
-  };
+  }, [initialLoadDone]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +25,7 @@ const CategoryManage = () => {
       }
       setName('');
       setEditId(null);
-      fetchCategories();
+      refreshCategories();
     } catch (err) {
       alert(err.response?.data?.message || 'Error saving category');
     }
@@ -46,7 +40,7 @@ const CategoryManage = () => {
     if (window.confirm('Are you sure?')) {
       try {
         await api.delete(`/categories/${id}`);
-        fetchCategories();
+        refreshCategories();
       } catch (err) {
         alert(err.response?.data?.message || 'Error deleting category');
       }

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { getApiBaseUrl } from '../../api/axios';
+import { useAdmin } from '../../context/AdminContext';
 
 const FoodManage = () => {
-  const [foods, setFoods] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const { foods, categories, initialLoadDone, fetchAllData, refreshFoods } = useAdmin();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,21 +23,10 @@ const FoodManage = () => {
   }).format(price);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const [foodsRes, catRes] = await Promise.all([
-        api.get('/foods'),
-        api.get('/categories')
-      ]);
-      setFoods(foodsRes.data);
-      setCategories(catRes.data);
-    } catch (err) {
-      if (err.response?.status === 401) navigate('/admin');
+    if (!initialLoadDone) {
+      fetchAllData();
     }
-  };
+  }, [initialLoadDone]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -67,7 +56,7 @@ const FoodManage = () => {
       setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null });
       setEditId(null);
       document.getElementById('imageInput').value = '';
-      fetchData();
+      refreshFoods();
     } catch (err) {
       alert(err.response?.data?.message || 'Error saving food item');
     }
@@ -89,7 +78,7 @@ const FoodManage = () => {
     if (window.confirm('Are you sure you want to delete this food item?')) {
       try {
         await api.delete(`/foods/${id}`);
-        fetchData();
+        refreshFoods();
       } catch (err) {
         alert(err.response?.data?.message || 'Error deleting food item');
       }

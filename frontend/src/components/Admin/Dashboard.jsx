@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import Menu from '../Customer/Menu';
 import MenuQrCode from './MenuQrCode';
+import { useAdmin } from '../../context/AdminContext';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({ foods: 0, categories: 0 });
-  const [admin, setAdmin] = useState(null);
+  const { admin, foods, categories, initialLoadDone, fetchAllData, refreshAdmin } = useAdmin();
   const [logoFile, setLogoFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
@@ -18,27 +18,10 @@ const Dashboard = () => {
       return;
     }
 
-    const fetchStats = async () => {
-      try {
-        const [foodsRes, catRes] = await Promise.all([
-          api.get('/foods'),
-          api.get('/categories')
-        ]);
-        const adminRes = await api.get('/auth/me');
-        setStats({
-          foods: foodsRes.data.length,
-          categories: catRes.data.length
-        });
-        setAdmin(adminRes.data);
-      } catch (err) {
-        if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/admin');
-        }
-      }
-    };
-    fetchStats();
-  }, [navigate]);
+    if (!initialLoadDone) {
+      fetchAllData();
+    }
+  }, [navigate, initialLoadDone]);
 
   const handleLogoUpload = async (e) => {
     e.preventDefault();
@@ -49,10 +32,10 @@ const Dashboard = () => {
     formData.append('logo', logoFile);
 
     try {
-      const res = await api.put('/auth/me', formData, {
+      await api.put('/auth/me', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setAdmin(res.data);
+      refreshAdmin();
       setLogoFile(null);
       alert('Logo updated successfully!');
     } catch (err) {
@@ -62,10 +45,11 @@ const Dashboard = () => {
     }
   };
 
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2>Admin Dashboard</h2>
+  const stats = {
+    foods: foods.length,
+    categories: categories.length
+  };
+
         {admin?.logo && (
           <img src={admin.logo} alt="Restaurant Logo" style={{ height: '60px', borderRadius: '8px', objectFit: 'contain' }} />
         )}

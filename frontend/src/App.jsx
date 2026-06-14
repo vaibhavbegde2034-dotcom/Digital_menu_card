@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AdminProvider } from './context/AdminContext';
 import Menu from './components/Customer/Menu';
 import MenuDirectory from './components/Customer/MenuDirectory';
 import Login from './components/Admin/Login';
@@ -35,9 +36,11 @@ const AppLayout = () => {
 
 function App() {
   return (
-    <Router>
-      <AppLayout />
-    </Router>
+    <AdminProvider>
+      <Router>
+        <AppLayout />
+      </Router>
+    </AdminProvider>
   );
 }
 

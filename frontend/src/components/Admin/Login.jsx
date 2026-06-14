@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
+import { useAdmin } from '../../context/AdminContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { fetchAllData } = useAdmin();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await api.post('/auth/login', { username, password });
       localStorage.setItem('token', res.data.token);
+      await fetchAllData();
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useAdmin } from '../context/AdminContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { admin, logout } = useAdmin();
   const token = localStorage.getItem('token');
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    logout();
     navigate('/admin');
   };
 
