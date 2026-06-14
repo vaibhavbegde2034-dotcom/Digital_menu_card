@@ -8,6 +8,7 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
   const { adminId } = useParams();
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const requestConfig = adminId ? { params: { admin: adminId } } : undefined;
       const requests = [
         api.get('/foods', requestConfig),
@@ -27,6 +29,8 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
       setCategories(categoriesRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,13 +79,22 @@ const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings
         ))}
       </div>
 
-      <div className="food-grid">
-        {filteredFoods.map(food => (
-          <FoodCard key={food._id} food={food} />
-        ))}
-      </div>
-      {filteredFoods.length === 0 && (
-        <p className="empty-menu">No matching menu items found.</p>
+      {loading ? (
+        <div className="loading-container">
+          <div className="loader"></div>
+          <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Loading menu...</p>
+        </div>
+      ) : (
+        <>
+          <div className="food-grid">
+            {filteredFoods.map(food => (
+              <FoodCard key={food._id} food={food} />
+            ))}
+          </div>
+          {filteredFoods.length === 0 && (
+            <p className="empty-menu">No matching menu items found.</p>
+          )}
+        </>
       )}
     </div>
   );

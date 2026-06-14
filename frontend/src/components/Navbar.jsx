@@ -18,7 +18,14 @@ const Navbar = () => {
             <Link to="/admin/dashboard">Dashboard</Link>
             <Link to="/admin/categories">Categories</Link>
             <Link to="/admin/foods">Foods</Link>
-            <a href="#" onClick={handleLogout}>Logout</a>
+            <button 
+              className="nav-logout-btn" 
+              onClick={handleLogout}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 'inherit', fontFamily: 'inherit', color: 'inherit', fontWeight: '500', marginLeft: '1.5rem' }}
+            >
+              Logout
+            </button>
+
           </>
         ) : (
           <Link to="/admin">Admin Login</Link>
