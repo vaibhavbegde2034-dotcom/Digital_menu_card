@@ -3,19 +3,36 @@ import { useParams } from 'react-router-dom';
 import api from '../../api/axios';
 import FoodCard from './FoodCard';
 
-const Menu = ({ title = 'Our Menu', subtitle = 'Discover our delicious offerings' }) => {
-  const [foods, setFoods] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [adminName, setAdminName] = useState('');
-  const [adminLogo, setAdminLogo] = useState('');
+const Menu = ({ 
+  title = 'Our Menu', 
+  subtitle = 'Discover our delicious offerings',
+  foods: initialFoods = null,
+  categories: initialCategories = null,
+  adminName: initialAdminName = '',
+  adminLogo: initialAdminLogo = ''
+}) => {
+  const [foods, setFoods] = useState(initialFoods || []);
+  const [categories, setCategories] = useState(initialCategories || []);
+  const [adminName, setAdminName] = useState(initialAdminName);
+  const [adminLogo, setAdminLogo] = useState(initialAdminLogo);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialFoods);
   const { adminId } = useParams();
 
   useEffect(() => {
-    fetchData();
-  }, [adminId]);
+    // Only fetch if data wasn't provided via props
+    if (!initialFoods) {
+      fetchData();
+    } else {
+      // Sync state if props change (important for the preview)
+      setFoods(initialFoods);
+      setCategories(initialCategories);
+      setAdminName(initialAdminName);
+      setAdminLogo(initialAdminLogo);
+      setLoading(false);
+    }
+  }, [adminId, initialFoods, initialCategories, initialAdminName, initialAdminLogo]);
 
   const fetchData = async () => {
     try {

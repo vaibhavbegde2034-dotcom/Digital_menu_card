@@ -6,19 +6,23 @@ import { useAdmin } from '../../context/AdminContext';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { fetchAllData } = useAdmin();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     try {
       const res = await api.post('/auth/login', { username, password });
       localStorage.setItem('token', res.data.token);
-      await fetchAllData();
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +51,9 @@ const Login = () => {
             required 
           />
         </div>
-        <button type="submit" className="btn btn-block">Login</button>
+        <button type="submit" className="btn btn-block" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
       
     </div>

@@ -117,6 +117,9 @@ const Dashboard = () => {
           title="Live Preview"
           subtitle="This is how your customers see your menu card"
           adminName={admin?.username}
+          adminLogo={admin?.logo}
+          foods={foods}
+          categories={categories}
         />
       </div>
     </div>

@@ -29,7 +29,8 @@ const upload = multer({ storage });
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const admin = await Admin.findOne({ username });
+        // Optimization: Use .lean() and only select necessary fields
+        const admin = await Admin.findOne({ username }).select('+password').lean();
 
         if (admin && (await bcrypt.compare(password, admin.password))) {
             const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
