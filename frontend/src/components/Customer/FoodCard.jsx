@@ -14,12 +14,13 @@ const FoodCard = ({ food }) => {
 
   // Spicy text helper
   const renderSpicyLevel = (level) => {
-    if (!level || level === 0) return null;
-    
     let text = '';
     let color = '';
     
-    if (level === 2) {
+    if (level === 0 || !level) {
+      text = 'Not Spicy';
+      color = '#22c55e'; // Green
+    } else if (level === 2) {
       text = 'Medium Spicy';
       color = '#f97316'; // Orange
     } else if (level === 3) {
@@ -86,11 +87,9 @@ const FoodCard = ({ food }) => {
         </div>
       </div>
       <div className="food-info">
-        <h3 className="food-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span>
-            {food.name}
-            {renderSpicyLevel(food.spicyLevel)}
-          </span>
+        <h3 className="food-title" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+          <span>{food.name}</span>
+          {renderSpicyLevel(food.spicyLevel)}
         </h3>
         {food.description && <p className="food-desc">{food.description}</p>}
         <div className="food-footer">

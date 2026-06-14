@@ -416,28 +416,92 @@ body {
   border: 1px solid var(--border-color);
 }
 
-/* Responsive */
+/* Responsive Utilities */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+/* Responsive Improvements */
 @media (max-width: 768px) {
+  .container {
+    padding: 16px 12px;
+  }
+  
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+  
+  .nav-links a {
+    margin-left: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-logout-btn {
+    margin-left: 0.75rem !important;
+    padding: 0.4rem 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+
   .menu-header h1 {
     font-size: 1.75rem;
   }
+  
   .food-grid {
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
   }
+  
   .food-image {
-    height: 140px;
+    height: 130px;
   }
+  
   .food-info {
-    padding: 1rem;
+    padding: 0.85rem;
   }
+  
   .food-title {
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+  
+  .food-desc {
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .food-price {
     font-size: 0.95rem;
   }
-  .food-price {
-    font-size: 1rem;
-  }
+
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-login {
+    margin: 2rem 10px;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links {
+    gap: 10px;
+  }
+  
+  .nav-links a span {
+    display: none; /* Hide text, keep icons if needed - or just smaller text */
+  }
+
+  .category-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
   }
 }
 

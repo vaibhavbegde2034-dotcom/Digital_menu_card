@@ -101,7 +101,7 @@ const Menu = ({
         />
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+      <div className="table-responsive" style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginBottom: '1.5rem', border: 'none', padding: '4px' }}>
         <button 
           onClick={() => setDietaryFilter('all')}
           style={{ 
@@ -113,7 +113,8 @@ const Menu = ({
             fontSize: '0.8rem',
             fontWeight: '700',
             cursor: 'pointer',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
           }}
         >
           All
@@ -132,7 +133,8 @@ const Menu = ({
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
           }}
         >
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
@@ -152,7 +154,8 @@ const Menu = ({
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
           }}
         >
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }}></div>
@@ -160,22 +163,26 @@ const Menu = ({
         </button>
       </div>
 
-      <div className="category-filter" style={{ marginBottom: '3rem' }}>
-        <button 
-          className={`category-btn ${activeCategory === 'All' ? 'active' : ''}`}
-          onClick={() => setActiveCategory('All')}
-        >
-          All
-        </button>
-        {categories.map(cat => (
+      <div className="table-responsive" style={{ border: 'none', marginBottom: '3rem' }}>
+        <div className="category-filter" style={{ marginBottom: 0, justifyContent: 'flex-start', flexWrap: 'nowrap', padding: '4px' }}>
           <button 
-            key={cat._id}
-            className={`category-btn ${activeCategory === cat.name ? 'active' : ''}`}
-            onClick={() => setActiveCategory(cat.name)}
+            className={`category-btn ${activeCategory === 'All' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('All')}
+            style={{ whiteSpace: 'nowrap' }}
           >
-            {cat.name}
+            All
           </button>
-        ))}
+          {categories.map(cat => (
+            <button 
+              key={cat._id}
+              className={`category-btn ${activeCategory === cat.name ? 'active' : ''}`}
+              onClick={() => setActiveCategory(cat.name)}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
