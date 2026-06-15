@@ -3,6 +3,7 @@ const router = express.Router();
 const Food = require('../models/Food');
 const Category = require('../models/Category');
 const { protect, optionalProtect } = require('../middleware/authMiddleware');
+const { checkSubscription } = require('../middleware/subscriptionMiddleware');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -25,7 +26,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-router.get('/', optionalProtect, async (req, res) => {
+router.get('/', optionalProtect, checkSubscription, async (req, res) => {
     try {
         const adminId = req.adminId || req.query.admin;
         const query = adminId ? { admin: adminId } : {};

@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 const adminSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    logo: { type: String }
+    logo: { type: String },
+    isSuperAdmin: { type: Boolean, default: false },
+    subscriptionEndDate: { type: Date },
+    planDurationMonths: { type: Number, default: 0 }
 }, { timestamps: true });
 
 

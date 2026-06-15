@@ -7,6 +7,7 @@ import Register from './components/Admin/Register';
 import Dashboard from './components/Admin/Dashboard';
 import FoodManage from './components/Admin/FoodManage';
 import CategoryManage from './components/Admin/CategoryManage';
+import SuperAdminDashboard from './components/Admin/SuperAdminDashboard';
 import Navbar from './components/Navbar';
 import './index.css';
 
@@ -28,6 +29,7 @@ const AppLayout = () => {
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/foods" element={<FoodManage />} />
           <Route path="/admin/categories" element={<CategoryManage />} />
+          <Route path="/admin/super-dashboard" element={<SuperAdminDashboard />} />
         </Routes>
       </div>
     </>

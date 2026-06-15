@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/foods', require('./routes/foodRoutes'));
+app.use('/api/superadmin', require('./routes/superAdminRoutes'));
 
 const startServer = async () => {
     try {
