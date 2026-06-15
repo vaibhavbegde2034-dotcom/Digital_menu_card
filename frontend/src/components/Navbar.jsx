@@ -23,6 +23,12 @@ const Navbar = () => {
       <div className="nav-links">
         {token ? (
           <>
+            {admin?.isSuperAdmin && (
+              <Link to="/admin/super-dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary-color)' }}>
+                <LayoutDashboard size={16} />
+                <span>Super Admin</span>
+              </Link>
+            )}
             <Link to="/admin/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <LayoutDashboard size={16} />
               <span>Dashboard</span>

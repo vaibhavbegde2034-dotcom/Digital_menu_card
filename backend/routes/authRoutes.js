@@ -34,7 +34,7 @@ router.post('/login', async (req, res) => {
 
         if (admin && (await bcrypt.compare(password, admin.password))) {
             const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-            res.json({ _id: admin._id, username: admin.username, logo: admin.logo, token });
+            res.json({ _id: admin._id, username: admin.username, logo: admin.logo, isSuperAdmin: admin.isSuperAdmin, token });
         } else {
             res.status(401).json({ message: 'Invalid username or password' });
         }
@@ -85,8 +85,8 @@ router.get('/public/:id', async (req, res) => {
 });
 
 router.get('/me', protect, async (req, res) => {
-    const admin = await Admin.findById(req.adminId).select('_id username logo');
-    res.json({ _id: admin._id, username: admin.username, logo: admin.logo });
+    const admin = await Admin.findById(req.adminId).select('_id username logo isSuperAdmin');
+    res.json({ _id: admin._id, username: admin.username, logo: admin.logo, isSuperAdmin: admin.isSuperAdmin });
 });
 
 router.put('/me', protect, upload.single('logo'), async (req, res) => {
