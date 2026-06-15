@@ -3,8 +3,26 @@ const router = express.Router();
 const Admin = require('../models/Admin');
 const Food = require('../models/Food');
 const { protect } = require('../middleware/authMiddleware');
+const bcrypt = require('bcryptjs');
 
 // Middleware to check if the user is a Super Admin
+// ... (isSuperAdmin remains the same)
+
+// Add this route
+router.post('/admins', protect, isSuperAdmin, async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const existingAdmin = await Admin.findOne({ username });
+        if (existingAdmin) return res.status(409).json({ message: 'Username already exists' });
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const admin = await Admin.create({ username, password: hashedPassword });
+        res.status(201).json(admin);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 const isSuperAdmin = async (req, res, next) => {
     const admin = await Admin.findById(req.adminId);
     if (admin && admin.isSuperAdmin) {
@@ -31,19 +49,12 @@ router.get('/admins', protect, isSuperAdmin, async (req, res) => {
 
 router.put('/admins/:id/subscription', protect, isSuperAdmin, async (req, res) => {
     try {
-        const { months } = req.body;
+        const { endDate } = req.body;
         const admin = await Admin.findById(req.params.id);
         
         if (!admin) return res.status(404).json({ message: 'Admin not found' });
         
-        const currentDate = admin.subscriptionEndDate && new Date() < admin.subscriptionEndDate 
-            ? admin.subscriptionEndDate 
-            : new Date();
-            
-        currentDate.setMonth(currentDate.getMonth() + months);
-        
-        admin.subscriptionEndDate = currentDate;
-        admin.planDurationMonths = (admin.planDurationMonths || 0) + months;
+        admin.subscriptionEndDate = new Date(endDate);
         await admin.save();
         
         res.json(admin);
