@@ -4,7 +4,8 @@ import api, { getApiBaseUrl } from '../../api/axios';
 import { useAdmin } from '../../context/AdminContext';
 
 const FoodManage = () => {
-  const { foods, categories, initialLoadDone, fetchAllData, refreshFoods } = useAdmin();
+  const { foods, categories, initialLoadDone, fetchAllData, refreshFoods, isSubscriptionActive } = useAdmin();
+  const subscriptionActive = isSubscriptionActive();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -40,6 +41,7 @@ const FoodManage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!subscriptionActive) return alert('Subscription inactive');
     const data = new FormData();
     Object.keys(formData).forEach(key => {
       if (formData[key] !== null) {
@@ -59,7 +61,7 @@ const FoodManage = () => {
       }
       setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null, dietaryType: 'veg', spicyLevel: 0 });
       setEditId(null);
-      document.getElementById('imageInput').value = '';
+      if (document.getElementById('imageInput')) document.getElementById('imageInput').value = '';
       refreshFoods();
     } catch (err) {
       alert(err.response?.data?.message || 'Error saving food item');
@@ -67,6 +69,7 @@ const FoodManage = () => {
   };
 
   const handleEdit = (food) => {
+    if (!subscriptionActive) return;
     setEditId(food._id);
     setFormData({
       name: food.name,
@@ -81,6 +84,7 @@ const FoodManage = () => {
   };
 
   const handleDelete = async (id) => {
+    if (!subscriptionActive) return;
     if (window.confirm('Are you sure you want to delete this food item?')) {
       try {
         await api.delete(`/foods/${id}`);
@@ -100,66 +104,74 @@ const FoodManage = () => {
     <div>
       <h2 style={{ marginBottom: '2rem' }}>Manage Foods</h2>
       
-      <div className="food-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-        <h3 style={{ marginBottom: '1rem' }}>{editId ? 'Edit Food' : 'Add New Food'}</h3>
-        <form onSubmit={handleSubmit}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div className="form-group">
-              <label>Name</label>
-              <input type="text" className="form-control" name="name" value={formData.name} onChange={handleInputChange} required />
+      {!subscriptionActive && (
+        <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '2rem', fontWeight: '600' }}>
+          ⚠️ Your subscription has expired or service is inactive. Please contact your administrator to renew.
+        </div>
+      )}
+
+      {subscriptionActive && (
+        <div className="food-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+          <h3 style={{ marginBottom: '1rem' }}>{editId ? 'Edit Food' : 'Add New Food'}</h3>
+          <form onSubmit={handleSubmit}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="form-group">
+                <label>Name</label>
+                <input type="text" className="form-control" name="name" value={formData.name} onChange={handleInputChange} required />
+              </div>
+              <div className="form-group">
+                <label>Price (₹)</label>
+                <input type="number" step="0.01" className="form-control" name="price" value={formData.price} onChange={handleInputChange} required />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea className="form-control" name="description" value={formData.description} onChange={handleInputChange} rows="3"></textarea>
+              </div>
+              <div className="form-group">
+                <label>Category</label>
+                <select className="form-control" name="category" value={formData.category} onChange={handleInputChange} required>
+                  <option value="">Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat._id} value={cat._id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Dietary Type</label>
+                <select className="form-control" name="dietaryType" value={formData.dietaryType} onChange={handleInputChange} required>
+                  <option value="veg">Veg (Green Dot)</option>
+                  <option value="non-veg">Non-Veg (Red Dot)</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Spicy Level</label>
+                <select className="form-control" name="spicyLevel" value={formData.spicyLevel} onChange={handleInputChange} required>
+                  <option value={0}>Not Spicy</option>
+                  <option value={2}>Medium Spicy</option>
+                  <option value={3}>Extra Spicy</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Image</label>
+                <input type="file" id="imageInput" className="form-control" name="image" onChange={handleInputChange} accept="image/*" />
+              </div>
+              <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <input type="checkbox" name="availability" checked={formData.availability} onChange={handleInputChange} id="availability" />
+                <label htmlFor="availability" style={{ marginBottom: 0 }}>Available</label>
+              </div>
             </div>
-            <div className="form-group">
-              <label>Price (₹)</label>
-              <input type="number" step="0.01" className="form-control" name="price" value={formData.price} onChange={handleInputChange} required />
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <button type="submit" className="btn" style={{ flex: 1 }}>{editId ? 'Update Food' : 'Add Food'}</button>
+              {editId && (
+                <button type="button" className="btn btn-danger" onClick={() => {
+                  setEditId(null);
+                  setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null, dietaryType: 'veg', spicyLevel: 0 });
+                }}>Cancel</button>
+              )}
             </div>
-            <div className="form-group">
-              <label>Description</label>
-              <textarea className="form-control" name="description" value={formData.description} onChange={handleInputChange} rows="3"></textarea>
-            </div>
-            <div className="form-group">
-              <label>Category</label>
-              <select className="form-control" name="category" value={formData.category} onChange={handleInputChange} required>
-                <option value="">Select Category</option>
-                {categories.map(cat => (
-                  <option key={cat._id} value={cat._id}>{cat.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Dietary Type</label>
-              <select className="form-control" name="dietaryType" value={formData.dietaryType} onChange={handleInputChange} required>
-                <option value="veg">Veg (Green Dot)</option>
-                <option value="non-veg">Non-Veg (Red Dot)</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Spicy Level</label>
-              <select className="form-control" name="spicyLevel" value={formData.spicyLevel} onChange={handleInputChange} required>
-                <option value={0}>Not Spicy</option>
-                <option value={2}>Medium Spicy</option>
-                <option value={3}>Extra Spicy</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Image</label>
-              <input type="file" id="imageInput" className="form-control" name="image" onChange={handleInputChange} accept="image/*" />
-            </div>
-            <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <input type="checkbox" name="availability" checked={formData.availability} onChange={handleInputChange} id="availability" />
-              <label htmlFor="availability" style={{ marginBottom: 0 }}>Available</label>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button type="submit" className="btn" style={{ flex: 1 }}>{editId ? 'Update Food' : 'Add Food'}</button>
-            {editId && (
-              <button type="button" className="btn btn-danger" onClick={() => {
-                setEditId(null);
-                setFormData({ name: '', description: '', price: '', category: '', availability: true, image: null, dietaryType: 'veg', spicyLevel: 0 });
-              }}>Cancel</button>
-            )}
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      )}
 
       <div className="search-container" style={{ maxWidth: '100%', marginBottom: '1.5rem' }}>
         <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -226,8 +238,8 @@ const FoodManage = () => {
                   </span>
                 </td>
                 <td>
-                  <button onClick={() => handleEdit(food)} className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', marginRight: '0.5rem', backgroundColor: '#3b82f6' }}>Edit</button>
-                  <button onClick={() => handleDelete(food._id)} className="btn btn-danger" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>Delete</button>
+                  <button onClick={() => handleEdit(food)} className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', marginRight: '0.5rem', backgroundColor: '#3b82f6', opacity: subscriptionActive ? 1 : 0.5, pointerEvents: subscriptionActive ? 'auto' : 'none' }}>Edit</button>
+                  <button onClick={() => handleDelete(food._id)} className="btn btn-danger" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', opacity: subscriptionActive ? 1 : 0.5, pointerEvents: subscriptionActive ? 'auto' : 'none' }}>Delete</button>
                 </td>
               </tr>
             ))}

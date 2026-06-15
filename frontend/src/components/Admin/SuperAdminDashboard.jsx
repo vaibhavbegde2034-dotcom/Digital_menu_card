@@ -48,6 +48,15 @@ const SuperAdminDashboard = () => {
     }
   };
 
+  const toggleServiceStatus = async (adminId) => {
+    try {
+      await api.put(`/superadmin/admins/${adminId}/status`);
+      fetchAdmins();
+    } catch (err) {
+      alert('Failed to update service status');
+    }
+  };
+
   const isExpired = (endDate) => {
     if (!endDate) return true;
     return new Date() > new Date(endDate);
@@ -107,11 +116,11 @@ const SuperAdminDashboard = () => {
                       display: 'inline-flex', alignItems: 'center', gap: '4px',
                       fontSize: '0.75rem', fontWeight: '700',
                       padding: '4px 8px', borderRadius: '20px',
-                      background: expired ? '#fef2f2' : '#f0fdf4',
-                      color: expired ? '#991b1b' : '#166534'
+                      background: !admin.isActive || expired ? '#fef2f2' : '#f0fdf4',
+                      color: !admin.isActive || expired ? '#991b1b' : '#166534'
                     }}>
-                      {expired ? <XCircle size={14} /> : <CheckCircle size={14} />}
-                      {expired ? 'Expired' : 'Active'}
+                      {!admin.isActive || expired ? <XCircle size={14} /> : <CheckCircle size={14} />}
+                      {!admin.isActive ? 'Inactive' : expired ? 'Expired' : 'Active'}
                     </span>
                   </td>
                   <td>
@@ -123,8 +132,11 @@ const SuperAdminDashboard = () => {
                       onChange={(e) => setNewDates({...newDates, [admin._id]: e.target.value})}
                     />
                   </td>
-                  <td>
-                    <button className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => updateSubscription(admin._id)}>Save Date</button>
+                  <td style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => updateSubscription(admin._id)}>Save</button>
+                    <button className={`btn ${admin.isActive ? 'btn-danger' : ''}`} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => toggleServiceStatus(admin._id)}>
+                      {admin.isActive ? 'Stop' : 'Start'}
+                    </button>
                   </td>
                 </tr>
               );

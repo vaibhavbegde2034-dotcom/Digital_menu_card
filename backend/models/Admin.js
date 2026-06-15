@@ -6,6 +6,7 @@ const adminSchema = new mongoose.Schema({
     password: { type: String, required: true },
     logo: { type: String },
     isSuperAdmin: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     subscriptionEndDate: { type: Date },
     planDurationMonths: { type: Number, default: 0 }
 }, { timestamps: true });

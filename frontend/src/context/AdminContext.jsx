@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext } from 'react';
 import api from '../api/axios';
 
 const AdminContext = createContext();
@@ -71,9 +71,17 @@ export const AdminProvider = ({ children }) => {
     setInitialLoadDone(false);
   };
 
+  // Check if subscription is valid
+  const isSubscriptionActive = () => {
+    if (!admin) return false;
+    if (admin.isSuperAdmin) return true;
+    const expired = admin.subscriptionEndDate && new Date() > new Date(admin.subscriptionEndDate);
+    return admin.isActive && !expired;
+  };
+
   return (
     <AdminContext.Provider value={{ 
-      admin, foods, categories, loading, initialLoadDone, 
+      admin, foods, categories, loading, initialLoadDone, isSubscriptionActive,
       fetchAllData, refreshFoods, refreshCategories, refreshAdmin, logout 
     }}>
       {children}

@@ -23,45 +23,71 @@ const Navbar = () => {
       <div className="nav-links">
         {token ? (
           <>
-            {admin?.isSuperAdmin && (
-              <Link to="/admin/super-dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary-color)' }}>
-                <LayoutDashboard size={16} />
-                <span>Super Admin</span>
-              </Link>
+            {admin?.isSuperAdmin ? (
+              <>
+                <Link to="/admin/super-dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary-color)' }}>
+                  <LayoutDashboard size={16} />
+                  <span>Super Admin</span>
+                </Link>
+                <button 
+                  className="nav-logout-btn" 
+                  onClick={handleLogout}
+                  style={{ 
+                    background: 'var(--primary-soft)', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: '0.85rem', 
+                    color: 'var(--primary-color)', 
+                    fontWeight: '700', 
+                    marginLeft: '1.5rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <LogOut size={14} />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/admin/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <LayoutDashboard size={16} />
+                  <span>Dashboard</span>
+                </Link>
+                <Link to="/admin/categories" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <List size={16} />
+                  <span>Categories</span>
+                </Link>
+                <Link to="/admin/foods" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <Utensils size={16} />
+                  <span>Foods</span>
+                </Link>
+                <button 
+                  className="nav-logout-btn" 
+                  onClick={handleLogout}
+                  style={{ 
+                    background: 'var(--primary-soft)', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: '0.85rem', 
+                    color: 'var(--primary-color)', 
+                    fontWeight: '700', 
+                    marginLeft: '1.5rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <LogOut size={14} />
+                  <span>Logout</span>
+                </button>
+              </>
             )}
-            <Link to="/admin/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <LayoutDashboard size={16} />
-              <span>Dashboard</span>
-            </Link>
-            <Link to="/admin/categories" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <List size={16} />
-              <span>Categories</span>
-            </Link>
-            <Link to="/admin/foods" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Utensils size={16} />
-              <span>Foods</span>
-            </Link>
-            <button 
-              className="nav-logout-btn" 
-              onClick={handleLogout}
-              style={{ 
-                background: 'var(--primary-soft)', 
-                border: 'none', 
-                cursor: 'pointer', 
-                fontSize: '0.85rem', 
-                color: 'var(--primary-color)', 
-                fontWeight: '700', 
-                marginLeft: '1.5rem',
-                padding: '0.5rem 1rem',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}
-            >
-              <LogOut size={14} />
-              <span>Logout</span>
-            </button>
           </>
         ) : (
           <Link to="/admin" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
