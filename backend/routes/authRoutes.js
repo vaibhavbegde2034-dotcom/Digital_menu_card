@@ -85,8 +85,15 @@ router.get('/public/:id', async (req, res) => {
 });
 
 router.get('/me', protect, async (req, res) => {
-    const admin = await Admin.findById(req.adminId).select('_id username logo isSuperAdmin');
-    res.json({ _id: admin._id, username: admin.username, logo: admin.logo, isSuperAdmin: admin.isSuperAdmin });
+    const admin = await Admin.findById(req.adminId).select('_id username logo isSuperAdmin isActive subscriptionEndDate');
+    res.json({ 
+        _id: admin._id, 
+        username: admin.username, 
+        logo: admin.logo, 
+        isSuperAdmin: admin.isSuperAdmin,
+        isActive: admin.isActive,
+        subscriptionEndDate: admin.subscriptionEndDate
+    });
 });
 
 router.put('/me', protect, upload.single('logo'), async (req, res) => {
